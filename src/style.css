@@ -4,9 +4,9 @@
 :root {
   --cream:  #f5f0e8;
   --black:  #111;
-  --red:    #c0392b;
   --serif:  'Georgia', serif;
   --sans:   system-ui, sans-serif;
+  --scene-bg: #120800; /* deep dark brown — sky behind skyline at night/dusk */
 }
 
 html { font-size: 18px; }
@@ -17,45 +17,60 @@ body {
   font-family: var(--sans);
 }
 
-/* ── Locomotive scroll container ───────────────────────────────────────────── */
-/* Locomotive needs the container to fill the viewport and hide overflow.
-   It moves content via CSS transforms, so overflow:hidden prevents
-   content from being visible outside the viewport during scroll. */
 [data-scroll-container] {
   min-height: 100vh;
 }
 
-/* ── Hero ──────────────────────────────────────────────────────────────────── */
-.hero {
-  padding: 6rem 2rem 4rem;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.hero-images {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-/* The wrapper clips the image so the parallax offset stays hidden */
-.parallax-img {
+/* ── Hero scene ────────────────────────────────────────────────────────────── */
+/* overflow:hidden is the "ground" — it clips the vinyl when it starts below  */
+.hero-scene {
+  position: relative;
+  height: 100vh;
   overflow: hidden;
-  border-radius: 4px;
-  aspect-ratio: 3 / 4;
-  background: #ddd;
+  background: var(--scene-bg);
 }
 
-/* Image is slightly taller than its container so there's room to travel */
-.parallax-img img {
+/* ── Skyline layer (front) ─────────────────────────────────────────────────── */
+/* Anchored to the bottom edge, spans full width, sits in front of vinyl.
+   The sky area of the PNG should be transparent so the vinyl shows through. */
+.layer-skyline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: 130%;    /* extra height = the parallax travel budget */
-  object-fit: cover;
+  z-index: 2;
+}
+
+.layer-skyline img {
+  width: 100%;
+  display: block;
+}
+
+/* ── Vinyl layer (back) ────────────────────────────────────────────────────── */
+/* Centered horizontally, z-index 1 so it sits behind the skyline.
+   GSAP will move this element — starting it pushed down below the horizon
+   and rising it upward faster than the skyline on scroll. */
+.layer-vinyl {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 1;
+  width: clamp(280px, 55vmin, 620px);
+}
+
+.layer-vinyl img {
+  width: 100%;
   display: block;
 }
 
 /* ── Hero text ─────────────────────────────────────────────────────────────── */
+.hero-text {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 2rem 2rem;
+}
+
 .hero-text h1 {
   font-family: var(--serif);
   font-size: clamp(2rem, 5vw, 3.5rem);
@@ -64,9 +79,9 @@ body {
 }
 
 .dek {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   max-width: 65ch;
-  line-height: 1.6;
+  line-height: 1.7;
   color: #444;
 }
 
@@ -74,13 +89,6 @@ body {
 .body-copy {
   max-width: 680px;
   margin: 0 auto;
-  padding: 4rem 2rem 10rem;
+  padding: 2rem 2rem 10rem;
   line-height: 1.8;
-}
-
-/* ── Responsive: stack images on mobile ────────────────────────────────────── */
-@media (max-width: 640px) {
-  .hero-images {
-    grid-template-columns: 1fr;
-  }
 }
