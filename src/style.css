@@ -1,0 +1,86 @@
+/* ── Reset & base ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:  #f5f0e8;
+  --black:  #111;
+  --red:    #c0392b;
+  --serif:  'Georgia', serif;
+  --sans:   system-ui, sans-serif;
+}
+
+html { font-size: 18px; }
+
+body {
+  background: var(--cream);
+  color: var(--black);
+  font-family: var(--sans);
+}
+
+/* ── Locomotive scroll container ───────────────────────────────────────────── */
+/* Locomotive needs the container to fill the viewport and hide overflow.
+   It moves content via CSS transforms, so overflow:hidden prevents
+   content from being visible outside the viewport during scroll. */
+[data-scroll-container] {
+  min-height: 100vh;
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────────── */
+.hero {
+  padding: 6rem 2rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+/* The wrapper clips the image so the parallax offset stays hidden */
+.parallax-img {
+  overflow: hidden;
+  border-radius: 4px;
+  aspect-ratio: 3 / 4;
+  background: #ddd;
+}
+
+/* Image is slightly taller than its container so there's room to travel */
+.parallax-img img {
+  width: 100%;
+  height: 130%;    /* extra height = the parallax travel budget */
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Hero text ─────────────────────────────────────────────────────────────── */
+.hero-text h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.dek {
+  font-size: 1.15rem;
+  max-width: 65ch;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* ── Body copy ─────────────────────────────────────────────────────────────── */
+.body-copy {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 4rem 2rem 10rem;
+  line-height: 1.8;
+}
+
+/* ── Responsive: stack images on mobile ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .hero-images {
+    grid-template-columns: 1fr;
+  }
+}

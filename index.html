@@ -1,18 +1,50 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Vinyl: Community Beyond the Algorithm</title>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vinyl: Community Beyond the Algorithm</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Locomotive Scroll wraps the entire page content -->
+    <div data-scroll-container>
 
-        <style>
+      <!-- ── HERO: parallax images ─────────────────────── -->
+      <section class="hero">
+        <div class="hero-images">
+          <div class="parallax-img" data-scroll data-scroll-class="img--visible">
+            <img src="/src/assets/record-1.jpg" alt="Crate digging at Rasputin Records" />
+          </div>
+          <div class="parallax-img" data-scroll data-scroll-class="img--visible">
+            <img src="/src/assets/record-2.jpg" alt="Community listening session" />
+          </div>
+          <div class="parallax-img" data-scroll data-scroll-class="img--visible">
+            <img src="/src/assets/record-3.jpg" alt="Independent record store" />
+          </div>
+        </div>
 
-           
-        </style>
+        <div class="hero-text">
+          <h1>Vinyl: Community Beyond the Algorithm</h1>
+          <p class="dek">
+            In an era of infinite playlists, a new generation is finding belonging
+            in the tactile ritual of the record store.
+          </p>
+        </div>
+      </section>
 
+      <!-- ── BODY CONTENT (placeholder) ──────────────────── -->
+      <section class="body-copy">
+        <p>Story content goes here.</p>
+      </section>
 
-    </head>
-    <body>
-     
-    </body>
+    </div><!-- /data-scroll-container -->
+
+    <!--
+      type="module" tells the browser this is ES module JS.
+      Vite intercepts this during dev and resolves npm imports.
+      During build, Vite replaces this with a bundled file.
+    -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
