@@ -1,0 +1,11 @@
+# Claude worktrees
+.claude/worktrees/
+
+# Build output
+dist/
+
+# Dependencies
+node_modules/
+
+# OS
+.DS_Store
