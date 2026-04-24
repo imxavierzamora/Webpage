@@ -1,0 +1,45 @@
+name: Deploy to GitHub Pages
+
+# Runs on every push to main
+on:
+  push:
+    branches: [main]
+
+# Required permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # 1. Check out your code
+      - uses: actions/checkout@v4
+
+      # 2. Install Node.js (matches the version you're developing with)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # 3. Install dependencies (npm ci is stricter than npm install — uses exact
+      #    versions from package-lock.json so builds are reproducible)
+      - run: npm ci
+
+      # 4. Build — produces the dist/ folder
+      - run: npm run build
+
+      # 5. Upload dist/ as a GitHub Pages artifact
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      # 6. Deploy the artifact to GitHub Pages
+      - id: deployment
+        uses: actions/deploy-pages@v4
