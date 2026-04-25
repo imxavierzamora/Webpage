@@ -6,12 +6,9 @@ import 'locomotive-scroll/dist/locomotive-scroll.css'
 gsap.registerPlugin(ScrollTrigger)
 
 // ── 1. Init Locomotive Scroll v5 with GSAP as the custom ticker ──────────────
-// initCustomTicker/destroyCustomTicker are v5's official hooks for handing
-// off the animation loop to an external system. GSAP drives every frame,
-// so Lenis and ScrollTrigger share one loop and stay perfectly in sync.
 const locoScroll = new LocomotiveScroll({
   lenisOptions: {
-    duration: 1.2,
+    duration: 0.7,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   },
   initCustomTicker: (onRender) => gsap.ticker.add(onRender),
@@ -19,41 +16,60 @@ const locoScroll = new LocomotiveScroll({
 })
 
 // ── 2. Sync Locomotive's Lenis instance → ScrollTrigger ──────────────────────
-// lenisInstance is a public property on the v5 class.
-// Lenis updates window.scrollY each tick via GSAP, so ScrollTrigger reads
-// the real scroll position — no scrollerProxy needed.
 locoScroll.lenisInstance.on('scroll', ScrollTrigger.update)
 gsap.ticker.lagSmoothing(0)
 
-// ── 3. Sunrise parallax with pinning ─────────────────────────────────────────
-// A single timeline drives both the vinyl and the intro text on one ScrollTrigger.
-// Using a timeline lets each element travel a different distance — the text stops
-// at duration 1 (halfway), the vinyl keeps going to duration 2 (full scroll).
+// ── 3. Hero animation — static skyline, vinyl + title rise from below ─────────
 const tl = gsap.timeline({
   scrollTrigger: {
     trigger: '.hero-scene',
     pin: true,
+    anticipatePin: 1,
     scrub: 0.5,
     start: 'top top',
-    end: '+=650%',
+    end: '+=150%',
   }
 })
 
-// Vinyl: travels the full timeline (duration 2)
+// Vinyl: rises the full timeline
 tl.fromTo('.layer-vinyl',
-  { yPercent: -10 },
-  { yPercent: -325, ease: 'none', duration: 2 },
-  0  // starts at position 0 in the timeline
+  { yPercent: -25 },
+  { yPercent: -95, ease: 'none', duration: 2 },
+  0
 )
 
-// Intro text: rises with the vinyl but stops at duration 1 (halfway through scroll).
-// ← tune duration to control when it stops relative to the vinyl's full travel.
+// Intro text: rises and stops at bay waterline halfway through
 tl.fromTo('.intro-text',
   { yPercent: 200 },
   { yPercent: 15, ease: 'none', duration: 1 },
-  0  // also starts at position 0
+  0
 )
 
-// ── 4. Refresh after images load ─────────────────────────────────────────────
+
+// Hide title once skyline has scrolled up past it
+ScrollTrigger.create({
+  trigger: '.hero-scene',
+  start: 'top -40%',
+  onEnter: () => gsap.set('.hero-title', { autoAlpha: 0 }),
+  onLeaveBack: () => gsap.set('.hero-title', { autoAlpha: 1 }),
+})
+
+// ── 4. Horizontal scroll section ─────────────────────────────────────────────
+const track = document.querySelector('.horiz-track')
+const panels = track.querySelectorAll('.horiz-panel')
+
+gsap.to(track, {
+  x: () => -(panels.length - 1) * window.innerWidth,
+  ease: 'none',
+  scrollTrigger: {
+    trigger: '.horiz-scroll-outer',
+    pin: true,
+    scrub: 3.5,
+    start: 'top top',
+    end: () => '+=' + (panels.length - 1) * window.innerWidth * 1.5,
+  }
+})
+
+// ── 5. Refresh after images load ─────────────────────────────────────────────
 ScrollTrigger.addEventListener('refresh', () => locoScroll.resize())
 ScrollTrigger.refresh()

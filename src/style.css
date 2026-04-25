@@ -2,11 +2,24 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --cream:  #f5f0e8;
+      --orange:  #e07a3a;
+      --orange-lt: #f2a265;
+      --orange-pale: #fde8d4;
+      --brown:   #5c3317;
+      --brown-md: #7d4e28;
+      --brown-lt: #a8713d;
+      --ink:     #1e0f00;
+      --ink-md:  #3d2800;
+      --groove:  #c8701a;
+  --cream:  #fdf5ec;
   --black:  #111;
-  --serif:  'Georgia', serif;
-  --sans:   system-ui, sans-serif;
-  --scene-bg: #120800; /* deep dark brown — sky behind skyline at night/dusk */
+  --display: 'Gravitas One', serif;
+  --script: 'Loved by the King', cursive;
+  --playfair: 'Playfair Display', serif;
+  --serif:  'Cormorant Garamond', Georgia, serif;
+  --mono:   'DM Mono', monospace;
+  --sans:   'DM Mono', sans-serif;
+  --scene-bg: #fdf5ec; /* deep dark brown — sky behind skyline at night/dusk */
 }
 
 html { font-size: 18px; }
@@ -18,7 +31,7 @@ body {
 }
 
 [data-scroll-container] {
-  min-height: 200vh;
+  min-height: 100vh;
 }
 
 /* ── Hero scene ────────────────────────────────────────────────────────────── */
@@ -27,7 +40,7 @@ body {
   position: relative;
   height: 100vh;
   overflow: hidden;
-  background: var(--scene-bg);
+  z-index: 2;
 }
 
 /* ── Skyline layer (front) ─────────────────────────────────────────────────── */
@@ -38,33 +51,65 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  max-height: 100vh;    /* ← tune this: guarantees (100vh - 60vh) = 40vh above the title */
-  overflow: visible;   /* title and excess sky overflow upward — not clipped here */
+  height: 100%;
+  overflow: visible;
   display: flex;
-  align-items: flex-end; /* pins image to bottom so buildings stay visible */
+  align-items: flex-end;
   z-index: 2;
 }
 
 .layer-skyline img {
   width: 100%;
-  flex-shrink: 0;      /* prevents flex from compressing the image */
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  flex-shrink: 0;
   display: block;
 }
 
-/* ── Hero title (moves with skyline) ───────────────────────────────────────── */
+/* ── Hero title (stationary) ───────────────────────────────────────────────── */
 .hero-title {
-  position: absolute;
-  top: 10vh;           /* ← tune this: guaranteed distance from viewport top */
-  right: 10%;          /* ← tune this: distance from right edge */
+  position: fixed;
+  top: 9vh;
+  right: 10%;
   text-align: right;
-  z-index: 3;          /* above skyline and vinyl */
+  z-index: 1;          /* behind skyline (z-index: 2) so skyline scrolls over it */
 }
 
 .hero-title h1 {
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 15vw, 5rem);
+  line-height: 1.0;
+  color: var(--ink);
+}
+
+.hero-dek {
   font-family: var(--serif);
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 1.15;
-  color: var(--cream);
+  font-size: clamp(0.75rem, 1.2vw, 1rem);
+  font-style: italic;
+  line-height: 1.0;
+  color: var(--ink);
+  margin-top: .5rem;
+  max-width: 62ch;
+  margin-left: auto;
+  text-shadow: 0 0 2px rgba(255,255,255,0), 0 0 6px rgb(255, 255, 255,0);
+}
+
+.hero-byline {
+  font-family: var(--mono);
+  font-size: clamp(0.55rem, 0.8vw, 0.7rem);
+  letter-spacing: 0.5px;
+  color: var(--orange);
+  margin-top: 2.0rem;
+  text-shadow: 0 0 0px rgba(255,255,255,0), 0 0 0px rgba(255,255,255,0);
+}
+
+.hero-title h2 {
+  font-family: var(--script);
+  font-size: clamp(1rem, 7vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.0;
+  color: var(--orange);
 }
 
 /* ── Vinyl layer (back) ────────────────────────────────────────────────────── */
@@ -106,29 +151,146 @@ body {
   color: #444;
 }
 
-/* ── Intro text (rises with vinyl, stops at bay waterline) ────────────────── */
+/* ── Intro text (nested inside layer-skyline, moves with it) ────────────────── */
 .intro-text {
   position: absolute;
-  bottom: 8vh;             /* resting position — in the bay water area */
+  bottom: 10%;             /* % of skyline height — keeps it above the waterline */
   left: 50%;
   translate: -50% 0;
   width: clamp(260px, 75%, 620px);
-  z-index: 3;              /* above skyline so it reads over the bay */
+  z-index: 3;
   color: #fff;
   font-family: var(--serif);
   font-size: clamp(0.85rem, 1.4vw, 1.05rem);
   line-height: 1.55;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.6); /* keeps text legible over image */
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
 }
 
 /* ── Body copy ─────────────────────────────────────────────────────────────── */
 .body-copy {
   width: clamp(260px, 75%, 620px);
   margin: 0 auto;
-  padding: 3rem 0rem 10rem;
+  padding: 4rem 0rem 7rem;
   font-family: var(--serif);
   font-size: clamp(0.85rem, 1.4vw, 1.05rem);
   line-height: 1.55;
+}
+
+/* ── Horizontal scroll section ─────────────────────────────────────────────── */
+.horiz-scroll-outer {
+  overflow: hidden;
+}
+
+.horiz-track {
+  display: flex;
+  position: relative;
+  width: 600vw;
+  will-change: transform;
+  background-image: url('/src/assets/vinyl_horizontal_stack.jpeg');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  background-position: left center;
+}
+
+.horiz-panel {
+  min-width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+  gap: 4rem;
+  padding: 6rem 5vw;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.panel-theme {
+  background: rgba(30, 15, 0, 0.92);
+  backdrop-filter: blur(4px);
+  border-radius: 4px;
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.panel-quotes {
+  background: rgba(253, 245, 236, 0.88);
+  backdrop-filter: blur(4px);
+  border-radius: 4px;
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.horiz-panel--intro {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.intro-body {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  font-family: var(--serif);
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.panel-theme-text .highlight {
+  color: var(--orange);
+}
+
+.panel-theme-text {
+  font-family: var(--display);
+  font-size: clamp(0.65rem, 1vw, 1.6rem);
+  line-height: 1.6;
+  letter-spacing: -0.05em;
+  text-align: right;
+  color: #fff;
+}
+
+.panel-quotes {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.quote-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quote-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--orange);
+}
+
+.quote-card blockquote {
+  font-family: var(--serif);
+  font-size: clamp(0.80rem, 1.3vw, 2.5rem);
+  font-style: italic;
+  line-height: 1.2;
+  color: var(--ink-md);
+}
+
+.quote-card cite {
+  font-family: var(--mono);
+  font-size: clamp(0.60rem, .7rem, 1.5rem);
+  letter-spacing: 0px;
+  color: var(--orange);
+  font-style: normal;
 }
 
 /* ── Story map ─────────────────────────────────────────────────────────────── */
