@@ -54,20 +54,32 @@ ScrollTrigger.create({
   onLeaveBack: () => gsap.set('.hero-title', { autoAlpha: 1 }),
 })
 
-// ── 4. Horizontal scroll section ─────────────────────────────────────────────
-const track = document.querySelector('.horiz-track')
-const panels = track.querySelectorAll('.horiz-panel')
 
-gsap.to(track, {
-  x: () => -(panels.length - 1) * window.innerWidth,
-  ease: 'none',
-  scrollTrigger: {
-    trigger: '.horiz-scroll-outer',
-    pin: true,
-    scrub: 3.5,
-    start: 'top top',
-    end: () => '+=' + (panels.length - 1) * window.innerWidth * 1.5,
-  }
+// ── 4. Panel scrollytelling — crossfade through all six themes (desktop only) ─
+const panels = gsap.utils.toArray('.horiz-panel')
+
+gsap.matchMedia().add('(min-width: 769px)', () => {
+  gsap.set(panels, { opacity: 0 })
+  gsap.set(panels[0], { opacity: 1 })
+
+  const panelTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.horiz-scroll-outer',
+      pin: true,
+      scrub: 1,
+      start: 'top top',
+      end: () => '+=' + (panels.length - 1) * window.innerHeight * 1.5,
+    }
+  })
+
+  panels.forEach((panel, i) => {
+    if (i === 0) return
+    panelTl.to(panels[i - 1], { opacity: 0, duration: 0.2 })
+    panelTl.to(panels[i], { opacity: 1, duration: 0.2 }, '<0.05')
+    if (i < panels.length - 1) {
+      panelTl.to({}, { duration: 0.75 })
+    }
+  })
 })
 
 // ── 5. Refresh after images load ─────────────────────────────────────────────
