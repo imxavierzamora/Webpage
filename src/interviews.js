@@ -27,7 +27,7 @@ export const interviews = [
   },
   {
     id: 'castillo',
-    names: ['Jason Castillo', 'Ruben Castillo'],
+    names: ['Jason', 'Ruben Castillo'],
     thumbs: ['thumb_Jason.png', 'thumb_Ruben.png'],
     location: 'Stranded Records',
     tagline: 'Father and son approaching the crates like an art form — quick, intentional, and in search of the undiscoverable.',
@@ -62,6 +62,7 @@ export const interviews = [
       '"If you notice on LPs there is a cover you can look at, and then on the back you can read inserts that have lyrics," Blunck said. "You can sit there, read, and it\'s all beautiful. I\'ve been doing it my whole life."',
       "Today, Blunck owns just one record, an album made by a late friend. During the pandemic, Blunck needed to sell his records to survive. He said it took him just a year to go through his extensive catalog. Once he did, he opened up a store in Sacramento and never looked back.",
       '"I don\'t regret selling them," Blunck said. "The important ones will always be inside my heart."',
+      { type: 'image', src: 'photos_jon_album.jpg', alt: 'Description of photo' }
     ],
   },
   {
