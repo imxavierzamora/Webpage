@@ -198,3 +198,12 @@ drawer.addEventListener('wheel', (e) => {
   e.preventDefault()
   drawer.scrollBy(0, e.deltaY)
 }, { passive: false })
+
+// Intercept touch events so Lenis doesn't swallow mobile scroll inside the drawer
+drawer.addEventListener('touchstart', (e) => {
+  e.stopPropagation()
+}, { passive: true })
+
+drawer.addEventListener('touchmove', (e) => {
+  e.stopPropagation()
+}, { passive: true })
