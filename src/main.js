@@ -1,3 +1,4 @@
+import { interviews } from './interviews.js'
 import LocomotiveScroll from 'locomotive-scroll'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -85,3 +86,108 @@ gsap.matchMedia().add('(min-width: 769px)', () => {
 // ── 5. Refresh after images load ─────────────────────────────────────────────
 ScrollTrigger.addEventListener('refresh', () => locoScroll.resize())
 ScrollTrigger.refresh()
+
+// ── 6. Build timeline nodes ───────────────────────────────────────────────────
+const section = document.getElementById('timeline-section')
+
+interviews.forEach((iv, i) => {
+  const side = i % 2 === 0 ? 'left' : 'right'
+
+  const thumbsHtml = iv.thumbs
+    .map(t => `<img class="tl-thumb" src="${import.meta.env.BASE_URL}src/assets/${t}" alt="${iv.names.join(' & ')}" />`)
+    .join('')
+
+  const mediaIcon = iv.mediaType === 'video' ? '▶' : iv.mediaType === 'audio' ? '♪' : '≡'
+  const mediaLabel = iv.mediaType === 'video' ? 'Watch' : iv.mediaType === 'audio' ? 'Listen' : 'Read'
+
+  const node = document.createElement('div')
+  node.className = `tl-node tl-node--${side}`
+  node.dataset.id = iv.id
+  node.innerHTML = `
+    <div class="tl-card">
+      <div class="tl-thumbs">${thumbsHtml}</div>
+      <div class="tl-info">
+        <p class="tl-location">${iv.location}</p>
+        <h3 class="tl-name">${iv.names.join(' & ')}</h3>
+        <p class="tl-tagline">${iv.tagline}</p>
+        <button class="tl-btn">${mediaIcon} ${mediaLabel}</button>
+      </div>
+    </div>
+  `
+  section.appendChild(node)
+})
+
+// ── 7. Drawer logic ───────────────────────────────────────────────────────────
+const drawer = document.getElementById('interview-drawer')
+const overlay = document.getElementById('drawer-overlay')
+const drawerInner = document.getElementById('drawer-inner')
+
+function openDrawer(id) {
+  const iv = interviews.find(x => x.id === id)
+  if (!iv) return
+
+  const thumbsHtml = iv.thumbs
+    .map(t => `<img class="drawer-thumb" src="${import.meta.env.BASE_URL}src/assets/${t}" alt="${iv.names.join(' & ')}" />`)
+    .join('')
+
+  const mediaHtml = iv.embedUrl
+    ? `<div class="drawer-media">
+        <iframe
+          src="${iv.embedUrl}"
+          class="${iv.mediaType === 'video' ? 'is-video' : 'is-audio'}"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      </div>`
+    : ''
+
+  const textHtml = iv.paragraphs.map(p =>
+    typeof p === 'string'
+      ? `<p>${p}</p>`
+      : `<img class="drawer-story-img" src="${import.meta.env.BASE_URL}src/assets/${p.src}" alt="${p.alt}" />`
+  ).join('')
+
+  drawerInner.innerHTML = `
+    <div class="drawer-header">
+      <div class="drawer-thumbs">${thumbsHtml}</div>
+      <div>
+        <h2 class="drawer-name">${iv.names.join(' & ')}</h2>
+        <p class="drawer-location">${iv.location}</p>
+      </div>
+    </div>
+    ${mediaHtml}
+    <div class="drawer-text">${textHtml}</div>
+  `
+
+  drawer.classList.add('is-open')
+  drawer.setAttribute('aria-hidden', 'false')
+  overlay.classList.add('is-visible')
+  locoScroll.lenisInstance.stop()
+}
+
+function closeDrawer() {
+  drawer.classList.remove('is-open')
+  drawer.setAttribute('aria-hidden', 'true')
+  overlay.classList.remove('is-visible')
+  locoScroll.lenisInstance.start()
+  setTimeout(() => { drawerInner.innerHTML = '' }, 350)
+}
+
+document.getElementById('timeline-section').addEventListener('click', e => {
+  const btn = e.target.closest('.tl-btn')
+  if (!btn) return
+  const node = btn.closest('.tl-node')
+  if (node) openDrawer(node.dataset.id)
+})
+
+document.getElementById('drawer-close').addEventListener('click', closeDrawer)
+overlay.addEventListener('click', closeDrawer)
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer() })
+
+// Intercept wheel events on the drawer so Lenis doesn't swallow them
+drawer.addEventListener('wheel', (e) => {
+  if (!drawer.classList.contains('is-open')) return
+  e.stopPropagation()
+  e.preventDefault()
+  drawer.scrollBy(0, e.deltaY)
+}, { passive: false })
