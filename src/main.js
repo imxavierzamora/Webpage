@@ -80,13 +80,12 @@ gsap.matchMedia().add('(min-width: 769px)', () => {
     }
   })
 
+  panelTl.to({}, { duration: 0.75 })
   panels.forEach((panel, i) => {
     if (i === 0) return
     panelTl.to(panels[i - 1], { opacity: 0, duration: 0.2 })
     panelTl.to(panels[i], { opacity: 1, duration: 0.2 }, '<0.05')
-    if (i < panels.length - 1) {
-      panelTl.to({}, { duration: 0.75 })
-    }
+    panelTl.to({}, { duration: 0.75 })
   })
 })
 
