@@ -1,5 +1,12 @@
 import { interviews } from './interviews.js'
 import LocomotiveScroll from 'locomotive-scroll'
+
+// Let Vite process all assets so paths are correct in production builds
+const assetModules = import.meta.glob('/src/assets/*.{png,jpg,jpeg}', { eager: true })
+function assetUrl(filename) {
+  const mod = assetModules[`/src/assets/${filename}`]
+  return mod ? mod.default : `${import.meta.env.BASE_URL}src/assets/${filename}`
+}
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import 'locomotive-scroll/dist/locomotive-scroll.css'
@@ -94,7 +101,7 @@ interviews.forEach((iv, i) => {
   const side = i % 2 === 0 ? 'left' : 'right'
 
   const thumbsHtml = iv.thumbs
-    .map(t => `<img class="tl-thumb" src="${import.meta.env.BASE_URL}src/assets/${t}" alt="${iv.names.join(' & ')}" />`)
+    .map(t => `<img class="tl-thumb" src="${assetUrl(t)}" alt="${iv.names.join(' & ')}" />`)
     .join('')
 
   const mediaIcon = iv.mediaType === 'video' ? '▶' : iv.mediaType === 'audio' ? '♪' : '≡'
@@ -127,7 +134,7 @@ function openDrawer(id) {
   if (!iv) return
 
   const thumbsHtml = iv.thumbs
-    .map(t => `<img class="drawer-thumb" src="${import.meta.env.BASE_URL}src/assets/${t}" alt="${iv.names.join(' & ')}" />`)
+    .map(t => `<img class="drawer-thumb" src="${assetUrl(t)}" alt="${iv.names.join(' & ')}" />`)
     .join('')
 
   const mediaHtml = iv.embedUrl
@@ -144,7 +151,7 @@ function openDrawer(id) {
   const textHtml = iv.paragraphs.map(p =>
     typeof p === 'string'
       ? `<p>${p}</p>`
-      : `<img class="drawer-story-img" src="${import.meta.env.BASE_URL}src/assets/${p.src}" alt="${p.alt}" />`
+      : `<img class="drawer-story-img" src="${assetUrl(p.src)}" alt="${p.alt}" />`
   ).join('')
 
   drawerInner.innerHTML = `
