@@ -731,6 +731,14 @@ h4 {
 
 /* ── Mobile layout ──────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  .panel-photo--bottom {
+    display: none;
+  }
+
+  .panel-theme {
+    grid-template-rows: auto auto;
+  }
+
   .horiz-track {
     height: auto;
     overflow: visible;
