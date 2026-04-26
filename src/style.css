@@ -614,6 +614,9 @@ h4 {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .drawer.is-open {
