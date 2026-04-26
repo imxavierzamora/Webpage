@@ -137,13 +137,14 @@ function openDrawer(id) {
     .map(t => `<img class="drawer-thumb" src="${assetUrl(t)}" alt="${iv.names.join(' & ')}" />`)
     .join('')
 
+  const isAudio = iv.mediaType === 'audio'
   const mediaHtml = iv.embedUrl
     ? `<div class="drawer-media">
         <iframe
           src="${iv.embedUrl}"
-          class="${iv.mediaType === 'video' ? 'is-video' : 'is-audio'}"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
+          class="${isAudio ? 'is-audio' : 'is-video'}"
+          allow="autoplay"
+          ${isAudio ? 'scrolling="no" frameborder="no"' : 'allowfullscreen'}
         ></iframe>
       </div>`
     : ''
